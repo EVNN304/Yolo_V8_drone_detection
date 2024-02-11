@@ -1,10 +1,10 @@
 from ultralytics import YOLO
 import torch
-# Загрузить модель
+
 from Moution_detect import Moution_detect
 
 from tcp_sender import TCP_server
-from geometry_lib import *
+from glib import *
 import copy
 import multiprocessing as mp
 from play_sound_track import Sound_track
@@ -12,7 +12,7 @@ from play_sound_track import Sound_track
 
 
 
-def convert_to_global_cord_and_filter_bbox(cord_detect_nn, crop_cord, cord_track, p_x=50, p_y=50):
+def convert_to_global_cord_and_filter_bbox(cord_detect_nn, crop_cord, cord_track, p_x=30, p_y=30):
     lst_global, lst_filter = [], []
     for i, k in enumerate(cord_detect_nn):
         x1_global, y1_global, x2_global, y2_global = int(k[2]+crop_cord[0]), int(k[3]+crop_cord[1]), int(k[4]+crop_cord[0]), int(k[5]+crop_cord[1])
@@ -106,7 +106,7 @@ def collect_n_cast_neuro(q_dets:mp.Queue, q_to_client_yolo:mp.Queue, q_warning:m
 if __name__ == '__main__':
 
 
-    # Очередь обработчика нейросети. Размер должен быть немного больше максимального количества областей        TCP_ip, port = "192.168.0.90", 9000     TCP_ip, port = "192.168.0.90", 5005
+    
     q_to_neuro = mp.Queue(50)
     # Выходная очередь нейросети, из которой забираются все обнаружения
     q_from_neuro = mp.Queue(8)
@@ -124,13 +124,13 @@ if __name__ == '__main__':
 
 
 
-    cam = cv.VideoCapture("2_n.avi") # "2_n.avi"
+    cam = cv.VideoCapture("name_videofile_or_vebcam_or_ip_camera") 
 
 
     Moution_detect(q_to_tracker, get_tracker)
     start_tracking(get_tracker, q_to_neuro, q_moution_detect_image)
     Sound_track(q_warning, path_to_sound_file="ww.wav").run()
-    tcp_serv_orig, tcp_serv_moution, tcp_setv_yolo = TCP_server(q_true_original_image, ip_adress="192.168.0.90", port=6005, recv_bytes=4096).run(), TCP_server(q_moution_detect_image, ip_adress="192.168.0.90", port=5005, recv_bytes=4096).run(), TCP_server(q_detect_yolo, ip_adress="192.168.0.90", port=9000, recv_bytes=4096).run()
+    tcp_serv_orig, tcp_serv_moution, tcp_setv_yolo = TCP_server(q_true_original_image, ip_adress="local", port=6005, recv_bytes=4096).run(), TCP_server(q_moution_detect_image, ip_adress="local", port=5005, recv_bytes=4096).run(), TCP_server(q_detect_yolo, ip_adress="local", port=9000, recv_bytes=4096).run()
     frame_count = 0
 
     while cam.isOpened():
