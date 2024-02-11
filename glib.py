@@ -1,7 +1,7 @@
 import numpy as np
 import cv2 as cv
 import math
-# from toolset import make_border_mask
+
 import time
 
 def box_cvt_cent2corners_pts(box):
@@ -585,103 +585,3 @@ def bbox_cross_area(bbox1,bbox2):
     cross_area = x_cross*y_cross
     return cross_area
 
-
-if __name__ == '__main__':
-    print(calc_sector(10,350))
-
-    print(check_in_sector(100, 90, 45))
-
-    print('Проверка шагов сканирования')
-    sect_a1 = -30
-    sect_da = 60
-    observ_a = 25
-
-    points = calc_scan_points(sect_a1, sect_da, observ_a,1/3,'v')
-    print(points)
-    points2 = calc_scan_points_a1_a2(-45,90,42.5,1/3,'v')
-    print(points2)
-
-
-    print('Проверка сетки сканирования для изображения')
-    print(calc_scan_areas((300,400,1500,1300),(800,800),(0.2,0.2)))
-    #
-    # print('linear   2424')
-    # print(calc_linear_scan_areas((0,1400),800))
-    #
-    # panoramer = Panoram_creator([1800,1000],[-0.1,102,-3.9,13],1)
-    # cv.imshow('w',panoramer.p_image)
-    # while True:
-    #     if cv.waitKey(10) == ord('q'):
-    #         break
-    # cv.destroyAllWindows()
-
-# print(calc_fit_deg_to_px(1000,500,60,40))
-    print('Boxes cross area example')
-    bbox1 = [2,1,6,4]
-    bbox2 = [4,2,9,6]
-    area = bbox_cross_area(bbox1,bbox2)
-    print(f'area: {area}')
-
-    print('Cover by area example')
-    area = cover_pt_by_area((300,2000))
-    print(area)
-
-    print('\nDeg_to_px (Image_meta.put_abs_p_pos) example')
-
-    # meta = Image_meta(0,0,[4504,4504],[42.5,42.5])
-    meta = Image_meta(0, 0, [4504, 4504], [10.4, 10.4])
-    meta.print()
-    az = 355
-    el = -5
-    x,y = meta.put_abs_p_pos(az,el)
-    print(f'az {az} -> {x}px, el {el} -> {y}px')
-
-    print('meta additional metgods')
-
-    meta.print()
-    distance = 800
-    view_field = meta.calc_view_field(distance)
-    print(f'поле зрения в метрах = {view_field} на дистанции {distance}м')
-
-    shift_in_meters = 0.5
-    px_shift = meta.calc_px_shift_by_m_shift(distance,shift_in_meters)
-    print(f'сдвиг [{shift_in_meters}]м -> {round(px_shift,2)} px на дистанции {distance} м')
-    shift_in_meters = 5
-    for i in range(16):
-        if i ==0:
-            distance = 50
-        else:
-            distance = i*100
-        px_shift = meta.calc_px_shift_by_m_shift(distance, shift_in_meters)
-        percentage = 100*px_shift/meta.im_size[0]
-        print(f'сдвиг [{shift_in_meters}]м -> {round(px_shift, 2)} px на дистанции {distance} м ({round(percentage,2)}%)')
-
-
-    p1,p2,p3 = [3220, 1839],[3269, 2126],[3241, 2269]
-
-    v1 = Vect()
-    v2 = Vect()
-    v1.get_vect_by_pts(p1,p2)
-    v2.get_vect_by_pts(p2,p3)
-    angle = get_v_angle(v1,v2)
-
-    meta = Image_meta(355, 0, [4504, 4504], [42, 42])
-    print(f'v1: {v1.vect}({v1.get_length()}), v2: {v2.vect}({v2.get_length()})')
-    print('scalar',get_scalar_mult(v1,v2))
-    print(f'angle: {angle}')
-    az, el = 10,0
-    x,y = meta.put_abs_p_pos(az,el)
-    n_az,n_el = meta.get_abs_p_pos(x,y)
-
-    print(meta.px_center)
-    print(f'az, el {az,el} ->{x,y} -> {n_az,n_el}')
-
-    #Проверка записи метаданных
-    print(meta.to_string())
-
-    #Проверка сопоставления метаданных
-    meta1 = Image_meta(0,0,[1000,1000])
-    meta2 = Image_meta(30,45)
-    print('metas compartment',compare_meta(meta1,meta2))
-
-    print('dst: ',pt2pt_2d_range((3795, 1358),(3889, 1328)))
