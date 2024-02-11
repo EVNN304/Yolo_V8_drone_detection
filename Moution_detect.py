@@ -1,7 +1,7 @@
 
 import multiprocessing as mp
 import copy
-from geometry_lib import *
+from glib import *
 
 
 
