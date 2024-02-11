@@ -3,18 +3,24 @@ This repository demonstrates the work of the detector for detecting drones using
 link to the repository with the neural network https://github.com/ultralytics/ultralytics
 
 
+The main operating principle of the program is that the coordinates of a moving object from the tracker are given, an area is cut out from the full-size image and transferred to a neural network for analysis
+
+
 Accuracy matrix for map50 for 3 classes:
 1) drone 0.988
 2) bird 0.986
 3) plane 0.998
 
 
-
-
 Accuracy matrix for map50-95
 1) drone 0.758
 2) bird 0.714
 3) plane 0.794
+
+
+
+
+
 ![confusion_matrix_normalized](https://github.com/Egorvasechko/Yolo_V8_drone_detection/assets/71592796/adcbb494-6897-43ec-85bd-bca80b9d5d2d)
 ![results](https://github.com/Egorvasechko/Yolo_V8_drone_detection/assets/71592796/b9fad1ee-75d5-444a-811e-36067d8e4661)
 
